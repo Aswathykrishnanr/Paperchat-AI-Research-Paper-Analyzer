@@ -244,32 +244,37 @@ uploaded_files = st.file_uploader(
 )
 
 if uploaded_files and not st.session_state.papers_processed:
-    with st.spinner("Reading and indexing your papers..."):
-        collection = create_collection("paperchat")
-        all_chunks = []
+    st.markdown(
+        f'<div class="success-box">{len(uploaded_files)} file(s) uploaded</div>',
+        unsafe_allow_html=True)
 
-        for uploaded_file in uploaded_files:
-            with tempfile.NamedTemporaryFile(
-                delete=False, suffix=".pdf"
-            ) as tmp_file:
-                tmp_file.write(uploaded_file.read())
-                tmp_path = tmp_file.name
+    if st.button("Analyse Papers →"):
+        with st.spinner("Reading and indexing your papers..."):
+            collection = create_collection("paperchat")
+            all_chunks = []
 
-            text = extract_text_from_pdf(tmp_path)
-            chunks = split_text_into_chunks(text, uploaded_file.name)
-            all_chunks.extend(chunks)
-            os.unlink(tmp_path)
+            for uploaded_file in uploaded_files:
+                with tempfile.NamedTemporaryFile(
+                    delete=False, suffix=".pdf"
+                ) as tmp_file:
+                    tmp_file.write(uploaded_file.read())
+                    tmp_path = tmp_file.name
 
-        store_chunks(collection, all_chunks)
-        st.session_state.collection = collection
-        st.session_state.papers_processed = True
-        st.session_state.num_papers = len(uploaded_files)
-        st.rerun()
+                text = extract_text_from_pdf(tmp_path)
+                chunks = split_text_into_chunks(text, uploaded_file.name)
+                all_chunks.extend(chunks)
+                os.unlink(tmp_path)
+
+            store_chunks(collection, all_chunks)
+            st.session_state.collection = collection
+            st.session_state.papers_processed = True
+            st.session_state.num_papers = len(uploaded_files)
+            st.rerun()
 
 # ── Question Section ─────────────────────────────
 if st.session_state.papers_processed:
 
-    st.markdown('<p class="section-title">💬 Ask a Question</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-title">💬Ask a Question</p>', unsafe_allow_html=True)
 
     question = st.text_input(
         "question",
@@ -297,7 +302,7 @@ if st.session_state.papers_processed:
     # ── Chat History ─────────────────────────────
     if st.session_state.chat_history:
         st.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
-        st.markdown('<p class="section-title">Conversation</p>', unsafe_allow_html=True)
+        #st.markdown('<p class="section-title">Conversations</p>', unsafe_allow_html=True)
 
         for chat in reversed(st.session_state.chat_history):
             # User bubble
@@ -326,7 +331,7 @@ if st.session_state.papers_processed:
 else:
     st.markdown("""
     <div class="info-box">
-        👆 Upload your research papers above and click <strong>Process Papers</strong> to get started
+        👆 Upload your research papers above and click <strong>Analyse Papers</strong> to get started
     </div>
     """, unsafe_allow_html=True)
 
