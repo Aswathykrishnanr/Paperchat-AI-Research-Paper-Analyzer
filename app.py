@@ -338,7 +338,7 @@ else:
 # ── Footer ───────────────────────────────────────
 st.markdown("""
 <div class="footer">
-    Built with RAG · PaperChat
+    
 </div>
 """, unsafe_allow_html=True)
 
