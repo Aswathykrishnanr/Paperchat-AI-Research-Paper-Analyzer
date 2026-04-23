@@ -249,7 +249,7 @@ if uploaded_files and not st.session_state.papers_processed:
         unsafe_allow_html=True)
 
     if st.button("Analyse Papers →"):
-        with st.spinner("Reading and indexing your papers..."):
+        with st.spinner("Reading your files..."):
             collection = create_collection("paperchat")
             all_chunks = []
 
